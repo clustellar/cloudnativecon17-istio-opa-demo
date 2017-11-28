@@ -1,0 +1,15 @@
+kind: CustomResourceDefinition
+apiVersion: apiextensions.k8s.io/v1beta1
+metadata:
+  name: authz.config.istio.io
+  labels:
+    package: authz
+    istio: mixer-adapter
+spec:
+  group: config.istio.io
+  names:
+    kind: authz
+    plural: authz
+    singular: authz
+  scope: Namespaced
+  version: v1alpha2

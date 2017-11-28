@@ -1,0 +1,42 @@
+apiVersion: "config.istio.io/v1alpha2"
+kind: rule
+metadata:
+  name: authz
+  namespace: istio-system
+spec:
+  selector: "true"
+  actions:
+  - handler: opa-handler.opa.istio-system
+    instances:
+    - authz-instance.authz.istio-system
+
+---
+
+apiVersion: "config.istio.io/v1alpha2"
+kind: authz
+metadata:
+  name: authz-instance
+  namespace: istio-system
+spec:
+  subject:
+    user: source.uid | ""
+  action:
+    namespace: target.namespace | "default"
+    service: target.service | ""
+    method: request.method | ""
+    path: request.path | ""
+    name: source.name | ""
+
+---
+
+apiVersion: "config.istio.io/v1alpha2"
+kind: opa
+metadata:
+  name: opa-handler
+  namespace: istio-system
+spec:
+  policy:
+    - |+
+      package mixerauthz
+      allow = true
+  checkMethod: "data.mixerauthz.allow"
