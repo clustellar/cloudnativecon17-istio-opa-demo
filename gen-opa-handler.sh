@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+FILE=$1
+if [[ "" == "$FILE" ]]; then
+    FILE=example.rego
+fi
+
+
 cat <<EOF
 apiVersion: "config.istio.io/v1alpha2"
 kind: opa
@@ -9,6 +15,6 @@ metadata:
 spec:
   policy:
     - |+
-$(cat example.rego | sed 's/^/      /')
+$(cat $FILE | sed 's/^/      /')
   checkMethod: "data.example.allow"
 EOF
