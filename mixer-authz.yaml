@@ -21,22 +21,10 @@ spec:
   subject:
     user: source.uid | ""
   action:
-    namespace: target.namespace | "default"
-    service: target.service | ""
     method: request.method | ""
     path: request.path | ""
-    name: source.name | ""
-
----
-
-apiVersion: "config.istio.io/v1alpha2"
-kind: opa
-metadata:
-  name: opa-handler
-  namespace: istio-system
-spec:
-  policy:
-    - |+
-      package mixerauthz
-      allow = true
-  checkMethod: "data.mixerauthz.allow"
+    headers: request.headers
+    destination-namespace: destination.namespace | "default"
+    destination-service: destination.service | ""
+    source-namespace: source.namespace | "default"
+    source-service: source.service | ""
