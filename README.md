@@ -56,15 +56,15 @@ kubectl set image deployment istio-mixer mixer=tsandall/mixer:dev4 -n istio-syst
 Create the "authz" and "opa" CRDs:
 
 ```bash
-kubectl create -f authz-crd.yaml
-kubectl create -f opa-crd.yaml
+kubectl create -f manifests/authz-crd.yaml
+kubectl create -f manifests/opa-crd.yaml
 ```
 
-Configure the OPA adapter and load an empty policy:
+Configure the OPA adapter and load the policies:
 
 ```bash
-istioctl create -f mixer-authz.yaml
-istioctl create -f <(./gen-opa-handler.sh empty.rego)
+istioctl create -f manifests/mixer-authz.yaml
+istioctl create -f <(./scripts/gen-opa-handler.sh policies/allow_all/*.rego)
 ```
 
 At this point, Istio should be deployed and OPA should be enabled inside Mixer.
@@ -72,7 +72,7 @@ At this point, Istio should be deployed and OPA should be enabled inside Mixer.
 Deploy the BookInfo app to start testing:
 
 ```bash
-kubectl apply -f <(istioctl kube-inject -f bookinfo.yaml)
+kubectl apply -f <(istioctl kube-inject -f manifests/bookinfo.yaml)
 ```
 
 Run the following command to obtain the URL of the ingress:
@@ -88,7 +88,7 @@ To test the final version of the policy shown in the demo, update the OPA
 adapter's configuration:
 
 ```bash
-istioctl replace -f <(./gen-opa-handler.sh example.rego)
+istioctl replace -f <(./scripts/gen-opa-handler.sh policies/final/*.rego)
 ```
 
 If you refresh the page, the reviews should no longer be displayed. Login as

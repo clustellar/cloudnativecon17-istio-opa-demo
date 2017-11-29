@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-FILE=$1
-if [[ "" == "$FILE" ]]; then
-    FILE=example.rego
-fi
-
-
 cat <<EOF
 apiVersion: "config.istio.io/v1alpha2"
 kind: opa
@@ -13,8 +7,11 @@ metadata:
   name: opa-handler
   namespace: istio-system
 spec:
+  checkMethod: data.example.allow
   policy:
-    - |+
-$(cat $FILE | sed 's/^/      /')
-  checkMethod: "data.example.allow"
 EOF
+
+for file in "$@"; do
+    echo "  - |"
+    cat $file | sed 's/^/    /'
+done
