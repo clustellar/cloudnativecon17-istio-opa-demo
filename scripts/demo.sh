@@ -18,22 +18,19 @@ clear
 echo "Press enter to kick off demo."
 read
 
-
 export DEMO_RUN_FAST=1
 source $DIR/util.sh
 clear
 
-
 run "kubectl -n istio-system get deployments"
 run "kubectl get deployments"
-run "kubectl get crd"
-run "kubectl -n istio-system get rules authz -o yaml"
-run "kubectl -n istio-system get authz -o yaml"
-run "kubectl -n istio-system get opa -o yaml"
+run "kubectl -n istio-system get rule/authz -o yaml"
+run "kubectl -n istio-system get authz/authz-instance -o yaml"
+run "kubectl -n istio-system get opa/opa-handler -o yaml"
 
+osascript $DIR/openterm.applescript
 clear
 
-desc "Let's look at some policy!"
-
+echo http://$(kubectl get po -n istio-system -l istio=ingress -n istio-system -o 'jsonpath={.items[0].status.hostIP}'):$(kubectl get svc istio-ingress -n istio-system -n istio-system -o 'jsonpath={.spec.ports[0].nodePort}')/productpage
 $DIR/reload.sh
 fswatch -o -r $DIR/../policies/demo/ | xargs -n1 $DIR/reload.sh
